@@ -115,9 +115,15 @@ func main() {
 		})
 	}
 
-	// Sort entries by Level and then by Nodes
-	sort.Slice(entries, func(i, j int) bool {
+	// Sort entries by Level, then by Nodes, with names starting with '---' at the bottom of their level
+	sort.SliceStable(entries, func(i, j int) bool {
 		if entries[i].Level == entries[j].Level {
+			if strings.HasPrefix(entries[i].Naam, "---") && !strings.HasPrefix(entries[j].Naam, "---") {
+				return false
+			}
+			if !strings.HasPrefix(entries[i].Naam, "---") && strings.HasPrefix(entries[j].Naam, "---") {
+				return true
+			}
 			return entries[i].Nodes > entries[j].Nodes
 		}
 		return entries[i].Level > entries[j].Level
