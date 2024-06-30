@@ -43,9 +43,9 @@ func main() {
 			comment := strings.TrimSpace(match[4])
 
 			if comment == "" {
-				fmt.Fprintf(writer, "%s    %s    %s\n", name, level, nodes)
+				fmt.Fprintf(writer, "%s   %s   %s\n", name, level, nodes)
 			} else {
-				fmt.Fprintf(writer, "%s    %s    %s    %s\n", name, level, nodes, comment)
+				fmt.Fprintf(writer, "%s   %s   %s   %s\n", name, level, nodes, comment)
 			}
 		} else {
 			fmt.Println("No match for line:", line)
