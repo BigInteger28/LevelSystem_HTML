@@ -80,7 +80,7 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		// Split the line by tabs
-		parts := strings.Split(line, "    ")
+		parts := strings.Split(line, "   ")
 		if len(parts) < 3 {
 			fmt.Println("Skipping invalid line:", line)
 			continue
