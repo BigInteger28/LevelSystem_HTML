@@ -66,8 +66,8 @@ func getColorBackground(level int) string {
 }
 
 func main() {
-	// Open the input file
-	file, err := os.Open("input.txt")
+	// Open the output file
+	file, err := os.Open("output.txt")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
