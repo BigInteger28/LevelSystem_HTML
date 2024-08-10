@@ -14,7 +14,8 @@ type Entry struct {
 	Plaats     int
 	Naam       string
 	Level      int
-	Nodes      int
+	MinNodes   int
+	MaxNodes   int
 	ColorName  string
 	Tier       int
 	Commentaar string
@@ -91,14 +92,19 @@ func main() {
 			fmt.Println("Error parsing level:", err, "in line:", line)
 			continue
 		}
-		nodes, err := strconv.Atoi(parts[2])
+		minNodes, err := strconv.Atoi(parts[2])
+		if err != nil {
+			fmt.Println("Error parsing nodes:", err, "in line:", line)
+			continue
+		}
+		maxNodes, err := strconv.Atoi(parts[3])
 		if err != nil {
 			fmt.Println("Error parsing nodes:", err, "in line:", line)
 			continue
 		}
 		comment := ""
-		if len(parts) == 4 {
-			comment = parts[3]
+		if len(parts) == 5 {
+			comment = parts[4]
 		}
 		colorName, foreground := getColorAndForeground(level)
 		colorBackground := getColorBackground(level)
@@ -106,7 +112,8 @@ func main() {
 		entries = append(entries, Entry{
 			Naam:       parts[0],
 			Level:      level,
-			Nodes:      nodes,
+			MinNodes:   minNodes,
+			MaxNodes:   maxNodes,
 			ColorName:  colorName,
 			Tier:       getTier(level),
 			Commentaar: comment,
@@ -124,7 +131,7 @@ func main() {
 			if !strings.HasPrefix(entries[i].Naam, "---") && strings.HasPrefix(entries[j].Naam, "---") {
 				return true
 			}
-			return entries[i].Nodes > entries[j].Nodes
+			return entries[i].MaxNodes > entries[j].MaxNodes
 		}
 		return entries[i].Level > entries[j].Level
 	})
@@ -172,7 +179,8 @@ const htmlTemplate = `
 			<th>Level</th>
 			<th>Color</th>
 			<th>Tier</th>
-			<th>Nodes</th>
+			<th>Lowest Nodes</th>
+			<th>Highest Nodes</th>
 			<th>Commentaar</th>
 		</tr>
 		{{range .}}
@@ -182,7 +190,8 @@ const htmlTemplate = `
 			<td>{{.Level}}</td>
 			<td>{{.ColorName}}</td>
 			<td>{{.Tier}}</td>
-			<td>{{.Nodes}}</td>
+			<td>{{.MinNodes}}</td>
+			<td>{{.MaxNodes}}</td>
 			<td>{{.Commentaar}}</td>
 		</tr>
 		{{end}}
