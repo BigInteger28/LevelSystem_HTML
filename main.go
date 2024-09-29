@@ -14,8 +14,7 @@ type Entry struct {
 	Plaats     int
 	Naam       string
 	Level      int
-	MinNodes   int
-	MaxNodes   int
+	Nodes      int
 	ColorName  string
 	Tier       int
 	Commentaar string
@@ -29,25 +28,34 @@ var leagues = []struct {
 	Foreground string
 }{
 	{"White", "#FFFFFF", "black"},
+	{"Grey", "#C0C0C0", "black"},
 	{"Yellow", "#FFFF00", "black"},
+	{"Ochre Yellow", "#FFC619", "black"},
 	{"Salmon", "#FA8072", "black"},
-	{"Orange", "#FFA500", "black"},
+	{"Orange", "#FF8C00", "black"},
 	{"Lime", "#00FF00", "black"},
+	{"Mint", "#98FF98", "black"},
 	{"Green", "#008000", "white"},
+	{"Teal Green", "#00827F", "black"},
 	{"Cyan", "#00FFFF", "black"},
 	{"Blue", "#0000FF", "white"},
 	{"Dark Blue", "#00008B", "white"},
+	{"Pink", "#FFC1CC", "black"},
 	{"Magenta", "#FF00FF", "white"},
+	{"Bright Lavender", "#BF94E4", "black"},
 	{"Purple", "#800080", "white"},
 	{"Indigo", "#400040", "white"},
+	{"Olive", "#808000", "black"},
+	{"Taupe", "#B9A281", "white"},
 	{"Brown", "#8B4513", "white"},
 	{"Red", "#FF0000", "white"},
+	{"Crimson", "#DC143C", "white"},
 	{"Dark Red", "#8B0000", "white"},
 	{"Black", "#000000", "white"},
 }
 
 func getColorAndForeground(level int) (string, string) {
-	tierIndex := (level - 1) % 16
+	tierIndex := (level - 1) % 25
 	if tierIndex >= len(leagues) {
 		tierIndex = len(leagues) - 1
 	}
@@ -55,11 +63,11 @@ func getColorAndForeground(level int) (string, string) {
 }
 
 func getTier(level int) int {
-	return ((level - 1) / 16) + 1
+	return ((level - 1) / 25) + 1
 }
 
 func getColorBackground(level int) string {
-	tierIndex := (level - 1) % 16
+	tierIndex := (level - 1) % 25
 	if tierIndex >= len(leagues) {
 		tierIndex = len(leagues) - 1
 	}
@@ -92,19 +100,14 @@ func main() {
 			fmt.Println("Error parsing level:", err, "in line:", line)
 			continue
 		}
-		minNodes, err := strconv.Atoi(parts[2])
-		if err != nil {
-			fmt.Println("Error parsing nodes:", err, "in line:", line)
-			continue
-		}
-		maxNodes, err := strconv.Atoi(parts[3])
+		nodes, err := strconv.Atoi(parts[2])
 		if err != nil {
 			fmt.Println("Error parsing nodes:", err, "in line:", line)
 			continue
 		}
 		comment := ""
-		if len(parts) == 5 {
-			comment = parts[4]
+		if len(parts) == 4 {
+			comment = parts[3]
 		}
 		colorName, foreground := getColorAndForeground(level)
 		colorBackground := getColorBackground(level)
@@ -112,8 +115,7 @@ func main() {
 		entries = append(entries, Entry{
 			Naam:       parts[0],
 			Level:      level,
-			MinNodes:   minNodes,
-			MaxNodes:   maxNodes,
+			Nodes:      nodes,
 			ColorName:  colorName,
 			Tier:       getTier(level),
 			Commentaar: comment,
@@ -131,7 +133,7 @@ func main() {
 			if !strings.HasPrefix(entries[i].Naam, "---") && strings.HasPrefix(entries[j].Naam, "---") {
 				return true
 			}
-			return entries[i].MaxNodes > entries[j].MaxNodes
+			return entries[i].Nodes > entries[j].Nodes
 		}
 		return entries[i].Level > entries[j].Level
 	})
@@ -179,8 +181,7 @@ const htmlTemplate = `
 			<th>Level</th>
 			<th>Color</th>
 			<th>Tier</th>
-			<th>Lowest Nodes</th>
-			<th>Highest Nodes</th>
+			<th>Nodes</th>
 			<th>Commentaar</th>
 		</tr>
 		{{range .}}
@@ -190,8 +191,7 @@ const htmlTemplate = `
 			<td>{{.Level}}</td>
 			<td>{{.ColorName}}</td>
 			<td>{{.Tier}}</td>
-			<td>{{.MinNodes}}</td>
-			<td>{{.MaxNodes}}</td>
+			<td>{{.Nodes}}</td>
 			<td>{{.Commentaar}}</td>
 		</tr>
 		{{end}}
