@@ -56,7 +56,7 @@ var leagues = []struct {
 }
 
 func getColorAndForeground(level int) (string, string) {
-	tierIndex := (level - 1) % 16
+	tierIndex := (level - 1) % 25
 	if tierIndex >= len(leagues) {
 		tierIndex = len(leagues) - 1
 	}
@@ -64,11 +64,11 @@ func getColorAndForeground(level int) (string, string) {
 }
 
 func getTier(level int) int {
-	return ((level - 1) / 16) + 1
+	return ((level - 1) / 25) + 1
 }
 
 func getColorBackground(level int) string {
-	tierIndex := (level - 1) % 16
+	tierIndex := (level - 1) % 25
 	if tierIndex >= len(leagues) {
 		tierIndex = len(leagues) - 1
 	}
