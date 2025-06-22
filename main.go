@@ -146,8 +146,12 @@ func main() {
 	})
 
 	// Assign correct place values
+	var pos int = 1
 	for i := range entries {
-		entries[i].Plaats = i + 1
+		if !strings.HasPrefix(entries[i].Naam, "---") {
+			entries[i].Plaats = pos
+			pos++
+		}
 	}
 
 	// Generate HTML
@@ -194,7 +198,7 @@ const htmlTemplate = `
 		</tr>
 		{{range .}}
 		<tr style="background-color: {{.Color}}; color: {{.Foreground}}">
-			<td>{{.Plaats}}</td>
+			<td>{{if .Plaats}}{{.Plaats}}{{end}}</td>
 			<td>{{.Naam}}</td>
 			<td>{{.Level}}</td>
 			<td>{{.ColorName}}</td>
